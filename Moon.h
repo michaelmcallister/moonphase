@@ -10,6 +10,7 @@
 #define BLACK 0x0000
 
 enum Phase {
+  UNKNOWN,
   NEW,
   WAXING_CRESCENT,
   FIRST_QUARTER,
@@ -25,9 +26,9 @@ class Moon {
   struct Image {
     int height;
     int width;
-    bool mirrored;
     int background;
     int foreground;
+    bool mirrored;
     const unsigned char* data;
   };
   Moon(int day, int month, int year);

@@ -64,50 +64,37 @@ Phase Moon::phase() {
 
 // Bitmap returns an image struct containing the bitmap data and metadata.
 Moon::Image Moon::bitmap() {
-  // defaults for the returned image.
-  // To save space we only have one set of crescent, gibbous and quarter phases
-  // and mirror them to denote waxing/waning.
-  // The background and foreground colour is used for the 'new moon', when it's
-  // at it's darkest. To ensure contrast, the background will be white during
-  // this phase.
   Image img;
-  img.mirrored = false;
   img.background = BLACK;
   img.foreground = WHITE;
+  img.data = full;
+  img.height = 198;
+  img.width = 198;
+  img.mirrored = false;
 
-  switch (phase()) {
-    case WANING_CRESCENT:
-      img.mirrored = true;
-    case WAXING_CRESCENT:
-      img.data = crescent;
-      img.width = 121;
-      img.height = 195;
-      break;
-    case FIRST_QUARTER:
-      img.mirrored = true;
-    case LAST_QUARTER:
-      img.data = quarter;
-      img.width = 138;
-      img.height = 197;
-      break;
-    case WANING_GIBBOUS:
-      img.mirrored = true;
-    case WAXING_GIBBOUS:
-      img.data = gibbous;
-      img.width = 158;
-      img.height = 195;
-      break;
-    case FULL:
-      img.data = full;
-      img.height = 198;
-      img.width = 198;
-      break;
-    case NEW:
-      img.data = full;
-      img.height = 198;
-      img.width = 198;
-      img.background = WHITE;
-      img.foreground = BLACK;
+  // to save space we invert the colours to denote a new moon, rather than use
+  // a different bitmap.
+  if (phase() == NEW) {
+    img.background = WHITE;
+    img.foreground = BLACK;
   }
+
+  if (phase() == WANING_GIBBOUS || phase() == WAXING_GIBBOUS) {
+    img.width = 158;
+    img.height = 198;
+    img.data = gibbous;
+  }
+
+  if (phase() == WANING_CRESCENT || phase() == WAXING_CRESCENT) {
+    img.width = 121;
+    img.height = 195;
+    img.data = crescent;
+  }
+
+  // flip waning phases to save another bitmap.
+  if (phase() == WANING_GIBBOUS || phase() == WANING_CRESCENT) {
+    img.mirrored = true;
+  }
+
   return img;
 }
